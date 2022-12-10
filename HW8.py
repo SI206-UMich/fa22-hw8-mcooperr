@@ -9,7 +9,23 @@ def get_restaurant_data(db_filename):
     dictionaries. The key:value pairs should be the name, category, building, and rating
     of each restaurant in the database.
     """
-    pass
+    con = sqlite3.connect(db_filename)
+    cur = con.cursor()
+
+    list_dict = []
+    cur.execute('SELECT restaurants.name, restaurants.rating, categories.category, buildings.building FROM restaurants JOIN categories ON restaurants.category_id = categories.id JOIN buildings ON restaurants.building_id = buildings.id')
+    res = cur.fetchall()
+
+    for name, rating, category_id, building_id in res:
+        dictionary = {}
+        dictionary['name'] = name
+        dictionary['category'] = category_id
+        dictionary['building'] = building_id
+        dictionary['rating'] = rating
+        list_dict.append(dictionary)
+
+    return list_dict
+
 
 def barchart_restaurant_categories(db_filename):
     """
@@ -29,9 +45,14 @@ def highest_rated_category(db_filename):#Do this through DB as well
     """
     pass
 
+
 #Try calling your functions here
 def main():
-    pass
+    db_filename = 'South_U_Restaurants.db'
+    get_restaurant_data(db_filename)
+    barchart_restaurant_categories(db_filename)
+    highest_rated_category(db_filename)
+
 
 class TestHW8(unittest.TestCase):
     def setUp(self):
