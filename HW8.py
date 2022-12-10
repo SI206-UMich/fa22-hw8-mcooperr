@@ -68,7 +68,29 @@ def highest_rated_category(db_filename):#Do this through DB as well
     in that category. This function should also create a bar chart that displays the categories along the y-axis
     and their ratings along the x-axis in descending order (by rating).
     """
-    pass
+    con = sqlite3.connect(db_filename)
+    cur = con.cursor()
+
+    cur.execute('SELECT categories.category, AVG(restaurants.rating) FROM categories JOIN restaurants ON restaurants.category_id = categories.id GROUP BY category ORDER BY AVG(restaurants.rating) ASC')
+    res = cur.fetchall()
+
+    categories = []
+    averages = []
+    for category, avg in res:
+        categories.append(category)
+        avrg = round(avg,1)
+        averages.append(avrg)
+    
+    tup = ((categories[-1]),(averages[-1]))
+    
+    fig, ax = plt.subplots()
+    ax.barh(categories,averages)
+    ax.set(xlabel='Ratings', ylabel='Categories', title='Average Restaurant Ratings by Category')
+    plt.tight_layout()
+
+    plt.show()
+    
+    return(tup)
 
 
 #Try calling your functions here
